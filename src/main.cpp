@@ -24,6 +24,10 @@ int main(void)
 
     Vector3 boxPosition = { 0.0f, 1.0f, -3.0f };
 
+    float gAcceleration = -0.5;
+
+    float jumpInitialVel = 0.1;
+
     bool jumpAllowed = true;
 
     
@@ -38,23 +42,27 @@ int main(void)
     {
 
 
+        // updating position
+        // float tempVel = cameraVel.z * 0.1;
+        // std::cout << "temp vel z: " << tempVel << std::endl;
 
+        // cameraPos is my own made up model and it is not agreeing with raylib camera position
+        // if I try to add * dt when updating position. But camera.position is not changing dynamically lmao
         cameraPos.z += cameraVel.z;
 
         // constantly falling if above ground
         if (cameraPos.z > 2) {
-            cameraVel.z += -0.01;
+            cameraVel.z += gAcceleration * dt;
         } else {
             cameraVel.z = 0;
             jumpAllowed = true;
         }
 
-        
-        // std::cout << "camera pos z: " << cameraPos.z << std::endl;
+        std::cout << "camera pos z: " << cameraPos.z << std::endl;
         // std::cout << "camera vel z: " << cameraVel.z << std::endl;
 
         if (IsKeyDown(KEY_SPACE) && jumpAllowed) {
-            cameraVel.z = 0.1;
+            cameraVel.z = jumpInitialVel;
             jumpAllowed = false;
         }
     
