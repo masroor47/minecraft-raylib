@@ -24,6 +24,8 @@ int main(void)
 
     Vector3 boxPosition = { 0.0f, 1.0f, -3.0f };
 
+    bool jumpAllowed = true;
+
     
 
     DisableCursor();
@@ -39,18 +41,21 @@ int main(void)
 
         cameraPos.z += cameraVel.z;
 
+        // constantly falling if above ground
         if (cameraPos.z > 2) {
             cameraVel.z += -0.01;
         } else {
             cameraVel.z = 0;
+            jumpAllowed = true;
         }
 
         
-        std::cout << "camera pos z: " << cameraPos.z << std::endl;
-        std::cout << "camera vel z: " << cameraVel.z << std::endl;
+        // std::cout << "camera pos z: " << cameraPos.z << std::endl;
+        // std::cout << "camera vel z: " << cameraVel.z << std::endl;
 
-        if (IsKeyDown(KEY_SPACE)) {
+        if (IsKeyDown(KEY_SPACE) && jumpAllowed) {
             cameraVel.z = 0.1;
+            jumpAllowed = false;
         }
     
         UpdateCamera(&camera, cameraMode);
