@@ -10,6 +10,7 @@ int main(void)
 
     InitWindow(screenWidth, screenHeight, "raylib [core] example - basic window");
 
+    // Camera initialization
     Camera camera = { 0 };
     camera.position = (Vector3){ 0.0f, 4.0f, 4.0f };
     camera.target = (Vector3){ 0.0f, 2.0f, 0.0f };
@@ -19,38 +20,36 @@ int main(void)
 
     int cameraMode = CAMERA_FIRST_PERSON;
 
+    // Custom variables for kinematics
     Vector3 cameraVel = { 0.0f, 0.0f, 0.0f };
     Vector3 cameraPos = { 0.0f, 0.0f, 4.0f };
 
+    // Just a sample box
     Vector3 boxPosition = { 0.0f, 1.0f, -3.0f };
 
-    float gAcceleration = -0.5;
+    // Kinematics parameters
+    float gAcceleration = -9.8;
 
-    float jumpInitialVel = 0.1;
-
+    float jumpInitialVel = 3;
+    // To prevent double jumping
     bool jumpAllowed = true;
 
-    
 
     DisableCursor();
 
-    const float dt = 1.0f/60;
-
-    SetTargetFPS(60);
+    int targetFPS = 60;
+    SetTargetFPS(targetFPS);
+    const float dt = 1.0f/targetFPS;
 
     while (!WindowShouldClose())
     {
-
-
         // updating position
-        // float tempVel = cameraVel.z * 0.1;
-        // std::cout << "temp vel z: " << tempVel << std::endl;
+        Vector3 displacement = cameraVel;
+        displacement.z = displacement.z * dt;
 
-        // cameraPos is my own made up model and it is not agreeing with raylib camera position
-        // if I try to add * dt when updating position. But camera.position is not changing dynamically lmao
-        cameraPos.z += cameraVel.z;
+        cameraPos.z += displacement.z;
 
-        // constantly falling if above ground
+        // constantly accelerating down if above ground
         if (cameraPos.z > 2) {
             cameraVel.z += gAcceleration * dt;
         } else {
@@ -59,7 +58,7 @@ int main(void)
         }
 
         std::cout << "camera pos z: " << cameraPos.z << std::endl;
-        // std::cout << "camera vel z: " << cameraVel.z << std::endl;
+        std::cout << "camera vel z: " << cameraVel.z << std::endl;
 
         if (IsKeyDown(KEY_SPACE) && jumpAllowed) {
             cameraVel.z = jumpInitialVel;
@@ -67,9 +66,7 @@ int main(void)
         }
     
         UpdateCamera(&camera, cameraMode);
-        UpdateCameraPro(&camera, cameraVel, (Vector3) {0.0f, 0.0f, 0.0f}, 0.0f);
-
-
+        UpdateCameraPro(&camera, displacement, (Vector3) {0.0f, 0.0f, 0.0f}, 0.0f);
 
         BeginDrawing();
 
