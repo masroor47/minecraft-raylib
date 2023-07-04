@@ -55,6 +55,9 @@ int main(void)
         } else {
             cameraVel.z = 0;
             jumpAllowed = true;
+            // set position z at exactly 2 when arrive to ground
+            displacement = { 0, 0, 2 - cameraPos.z }; // displace camera slightly up so that it reaches height 2
+            cameraPos.z = 2;
         }
 
         std::cout << "camera pos z: " << cameraPos.z << std::endl;
